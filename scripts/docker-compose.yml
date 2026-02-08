@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    image: secret-validator-api:latest
+    container_name: secret-validator-api
+    ports:
+      - "5000:5000"
+    env_file:
+      - maor.env
+    
+    volumes:
+      - ./logs:/app/logs   
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/IsAlive"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

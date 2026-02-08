@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secret-validator-api
+  labels:
+    app: secret-validator
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: secret-validator
+  template:
+    metadata:
+      labels:
+        app: secret-validator
+    spec:
+      containers:
+      - name: api
+        image: secret-validator-api:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+        env:
+        - name: SECRET_VALUE
+          valueFrom:
+            secretKeyRef:
+              name: api-secret
+              key: secret-value
+        - name: LOG_FILE
+          value: "/app/logs/access.log"
+        volumeMounts:
+        - name: logs
+          mountPath: /app/logs
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: logs
+        emptyDir: {}

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: secret-validator-service
+  labels:
+    app: secret-validator
+spec:
+  type: LoadBalancer
+  selector:
+    app: secret-validator
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
+    name: http
