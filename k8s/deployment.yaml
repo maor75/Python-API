@@ -5,7 +5,7 @@ metadata:
   labels:
     app: secret-validator
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: secret-validator
@@ -20,6 +20,7 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
+          hostPort: 5000
         env:
         - name: SECRET_VALUE
           valueFrom:
@@ -52,4 +53,6 @@ spec:
           periodSeconds: 5
       volumes:
       - name: logs
-        emptyDir: {}
+        hostPath:
+          path: /mnt/host-logs
+          type: Directorys
