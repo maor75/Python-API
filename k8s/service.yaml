@@ -5,11 +5,12 @@ metadata:
   labels:
     app: secret-validator
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: secret-validator
   ports:
   - protocol: TCP
     port: 5000
     targetPort: 5000
+    nodePort: 30500
     name: http
